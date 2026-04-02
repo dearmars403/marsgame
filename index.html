@@ -3,9 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>■ 성화 생일 미궁 ■</title>
+  <title> 성화 생일 미궁 </title>
   <style>
-    @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff');
+    /* 1. 폰트 파일을 직접 연결하는 설정 */
+    @font-face {
+      font-family: 'DungGeunMo';
+      /* 파일 이름이 업로드한 것과 토씨 하나 안 틀리고 똑같아야 해! (대소문자 주의) */
+      src: url('./DungGeunMo.woff') format('woff'); 
+      font-weight: normal;
+      font-style: normal;
+    }
 
     :root {
       --bg:        #FFD1DC;
@@ -14,11 +21,11 @@
       --pink-pale: #FFE8EF;
       --pink-mid:  #E8557A;
       --white:     #FFFFFF;
+      /* 2. 위에서 정의한 'DungGeunMo'를 사용하도록 설정 */
       --font:      'DungGeunMo', monospace;
       --radius:    16px;
       --radius-sm: 10px;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
