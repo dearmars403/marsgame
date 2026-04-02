@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>■ 성화 생일 미궁 ■</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff');
+
+    :root {
+      --bg:        #FFD1DC;
+      --pink:      #FF6FA8;
+      --pink-dark: #C0406A;
+      --pink-pale: #FFE8EF;
+      --pink-mid:  #E8557A;
+      --white:     #FFFFFF;
+      --font:      'DungGeunMo', monospace;
+      --radius:    16px;
+      --radius-sm: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      background-image:
+        linear-gradient(rgba(255,111,168,.13) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,111,168,.13) 1px, transparent 1px);
+      background-size: 36px 36px;
+      font-family: var(--font);
+      color: var(--pink-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 16px 80px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: var(--white);
+      border: 3px solid var(--pink-dark);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 0 var(--pink-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .card-topbar {
+      width: 100%;
+      height: 14px;
+      background: repeating-linear-gradient(90deg, var(--pink) 0, var(--pink) 14px, var(--pink-pale) 14px, var(--pink-pale) 18px, var(--pink-dark) 18px, var(--pink-dark) 22px, var(--pink-pale) 26px);
+    }
+
+    .card-body {
+      width: 100%;
+      padding: 28px 28px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .emoji-container {
+      font-size: 28px;
+      user-select: none;
+      animation: float 2s ease-in-out infinite;
+      min-height: 35px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .question-image {
+      width: 100%;
+      max-width: 320px;
+      border: none;
+      border-radius: var(--radius-sm);
+      display: none;
+      margin-bottom: 10px;
+      image-rendering: pixelated;
+    }
+
+    .chat-bubble {
+      position: relative;
+      background: var(--pink-pale);
+      border: 3px solid var(--pink-dark);
+      border-radius: 15px;
+      padding: 20px 24px;
+      margin-bottom: 15px;
+      width: 100%;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column; /* 세로 배치 */
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 4px 4px 0 var(--pink-dark);
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .question-text {
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    /* 🌐 영문 번역 스타일 */
+    .eng-text {
+      font-size: 12px;
+      color: #8e8e8e;
+      margin-top: 8px;
+      line-height: 1.3;
+      opacity: 0.9;
+    }
+
+    .chat-bubble.no-style { background: none; border: none; box-shadow: none; }
+    .chat-bubble.no-style::after { display: none; }
+
+    .chat-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -15px; left: 50%;
+      transform: translateX(-50%);
+      border-width: 15px 12px 0;
+      border-style: solid;
+      border-color: var(--pink-dark) transparent transparent;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .input-row {
+      display: flex;
+      width: 100%;
+      border: 3px solid var(--pink-dark);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 0 var(--pink-dark);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .shake { animation: shake 0.4s ease-in-out; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+
+    .answer-input {
+      flex: 1;
+      height: 54px;
+      background: var(--pink-pale);
+      border: none;
+      border-right: 3px solid var(--pink-dark);
+      font-family: var(--font);
+      font-size: 16px;
+      padding: 0 16px;
+      color: var(--pink-dark);
+      outline: none;
+    }
+
+    .answer-input::placeholder { font-size: 14.4px; opacity: 0.7; }
+
+    .confirm-btn {
+      width: 80px;
+      background: var(--pink);
+      border: none;
+      font-family: var(--font);
+      color: var(--white);
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .yes-btn {
+      width: 120px;
+      height: 50px;
+      background: var(--pink);
+      border: 3px solid var(--pink-dark);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      color: var(--white);
+      cursor: pointer;
+      font-size: 18px;
+      box-shadow: 0 4px 0 var(--pink-dark);
+      margin-top: 10px;
+    }
+
+    .feedback { font-size: 13px; min-height: 20px; text-align: center; line-height: 1.4; margin-top: 5px; }
+    .feedback.err { color: #e53935; }
+
+    .hint-btn {
+      background: none;
+      border: 3px solid var(--pink-dark);
+      border-radius: var(--radius-sm);
+      color: var(--pink-dark);
+      font-family: var(--font);
+      font-size: 14px;
+      padding: 8px 28px;
+      cursor: pointer;
+      box-shadow: 0 3px 0 var(--pink-dark);
+    }
+
+    .sub-text {
+      font-size: 11px;
+      color: #888;
+      text-align: center;
+      line-height: 1.6;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--pink-dark);
+      opacity: 0.7;
+      line-height: 1.8;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body onclick="handleGlobalClick(event)">
+
+  <div class="card" id="main-card">
+    <div class="card-topbar"></div>
+    <div class="card-body">
+      <div class="emoji-container" id="emoji">🩶</div>
+      <img src="" id="stage-image" class="question-image" alt="Question Image">
+      <div class="chat-bubble" id="question-bubble">
+        <span id="question-text" class="question-text"></span>
+        <span id="eng-text" class="eng-text"></span> <!-- 영문 텍스트 영역 -->
+      </div>
+      <div id="sub-text" class="sub-text"></div>
+      
+      <div class="input-row" id="input-area" onclick="event.stopPropagation()">
+        <input class="answer-input" id="answer-input" type="text" placeholder="정답을 입력하세요" autocomplete="off" spellcheck="false">
+        <button class="confirm-btn" onclick="checkAnswer(event)">입력</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="yes-btn" id="yes-button" style="display:none;" onclick="nextStage(event)">예 <<</button>
+      <button class="hint-btn" id="hint-btn" onclick="goToHintLink()">HINT 💡</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>이 게임은 생성형 AI의 도움을 받아 제작되었습니다.</p>
+    <p>모든 문의 및 건의사항은 X @dearmars403 으로 부탁드립니다.</p>
+  </footer>
+
+  <script>
+    const DB_URL = "https://seonghwahbd-default-rtdb.firebaseio.com"; 
+
+    let userName = ""; 
+    let currentStage = 0;
+    let isTyping = false; 
+    let typingTimer;
+
+    const stages = [
+      { emoji: '🩶', question: '', eng: '', answer: 'eejdfkdgo', type: 'quiz' },
+      { emoji: '', question: '닉네임을 입력해주세요!', eng: 'Please enter your nickname!', answer: null, type: 'nickname' },
+      
+      // 💬 스토리 1
+      { emoji: '😢', question: '@@…', eng: '@@…', type: 'story', bubble: true },
+      { emoji: '🎂', question: '누가 내 케이크를 먹었어…', eng: 'Someone ate my cake…', type: 'story', bubble: true },
+      { emoji: '😭', question: '배고파ㅠㅠㅠㅠ', eng: 'I’m so hungry TTTT', type: 'story', bubble: true },
+      { emoji: '', question: '(이거 어디서 많이 본 장면인데…)', eng: '(I’ve seen this scene somewhere before…)', type: 'story', bubble: false },
+      { emoji: '', question: '(그래도 케이크를 되찾아와야겠지?)', eng: '(But we should get the cake back, right?)', type: 'story', bubble: false, hasYesBtn: true },
+      
+      // 퀴즈
+      { emoji: null, question: '첫 시작 💬✍️', eng: 'The first start 💬✍️', answer: 'qkek', type: 'quiz' },
+      { emoji: null, question: 'いただきます🍜💃', eng: 'Enjoy the meal! 🍜💃', answer: '241127', type: 'quiz' },
+      { emoji: null, question: '#인星화그램<br>봄+여름+가을+겨울=?', eng: '#InSeonghwaGram<br>Spring+Summer+Autumn+Winter=?', answer: '1003270', type: 'quiz' },
+      { 
+        emoji: null, question: '', eng: 'Find the answer in the image!',
+        image: 'https://blog.kakaocdn.net/dna/dxLFlA/dJMcaiCOhHM/AAAAAAAAAAAAAAAAAAAAADhqG3kkBDf2WFeUo-BM99s8Ghzy5STBsxxD0h58cEjo/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1777561199&allow_ip=&allow_referer=&signature=sbfbOvaI7l6y2EH2kPq81%2BrToF8%3D', 
+        answer: 'ballroomextravaganza', type: 'quiz' 
+      },
+      { emoji: null, question: '요즘 빠진 음식이 있는데…', eng: 'There is a food I’m into lately…', answer: 'rhqehflxkd', type: 'quiz' },
+      { emoji: null, question: '', eng: 'What is this?', image: 'https://blog.kakaocdn.net/dna/nCFFT/dJMcagLNFzD/AAAAAAAAAAAAAAAAAAAAAG72VrN9PKOfMoWNZpLWR6e2Z7olJe5jzfU1wlH94M8H/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1777561199&allow_ip=&allow_referer=&signature=1bfO%2Fh51S%2BiEHEDcKRza%2Bpbu9gM%3D', answer: 'eocn', type: 'quiz' },
+      { emoji: null, question: '', eng: 'Find the message!', image: 'https://blog.kakaocdn.net/dna/AXMJL/dJMb99TpOol/AAAAAAAAAAAAAAAAAAAAAFHxfqeSDTX55jaSMN1OzlOV3144ECfpJGd3L09ekaMM/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1777561199&allow_ip=&allow_referer=&signature=J2RdeQr0LV%2FwiNK1TqqUr4ijxBA%3D', answer: 'rmfjgrpdlttdjdy', type: 'quiz' },
+      { emoji: null, question: '', eng: 'Solve the puzzle!', image: 'https://blog.kakaocdn.net/dna/AMNMx/dJMcafsyKqe/AAAAAAAAAAAAAAAAAAAAAACY0-m1rerVa_RqOSENMONlSMnKI57tZWfHyz-2Bdl0/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1777561199&allow_ip=&allow_referer=&signature=wxzbPFacku9EWmS%2B9vcMuBvophE%3D', answer: '412563', type: 'quiz' },
+      { emoji: null, question: '운명처럼 우리 앞에 나타나줘서 고마워<br>가끔은 서투를 수도 있지만<br>잘 지켜봐 줘!', eng: 'Thank you for appearing before us like destiny.<br>We might be clumsy sometimes,<br>but please keep an eye on us!', answer: 'tkfkdgo', type: 'quiz' },
+
+      // 💬 스토리 2
+      { emoji: '😊', question: '…', eng: '…', type: 'story', bubble: true },
+      { emoji: '💖', question: '찾는 걸 도와줘서 고마워!', eng: 'Thanks for helping me find it!', type: 'story', bubble: true },
+      { emoji: '🎂', question: '그리고', eng: 'And...', type: 'story', bubble: true },
+      { emoji: '🎁', question: '케이크는 있잖아…', eng: 'The cake is...', type: 'story', bubble: true },
+      { emoji: '', question: '…', eng: '…', type: 'story', bubble: false },
+      { emoji: '', question: '잘 찾은 거 같아!', eng: 'I think I found it!', type: 'story', bubble: false },
+      { emoji: '', question: '@@ 덕분이야', eng: 'Thanks to @@', type: 'story', bubble: false },
+      { emoji: '', question: '잘 먹을게!', eng: 'I’ll enjoy it!', type: 'story', bubble: false },
+
+      // 최종 엔딩
+      { 
+        emoji: '🎉', 
+        question: '@@님 미궁을 클리어하셨습니다!<br>시간 내어 플레이해주셔서 감사합니다.<br>앞으로도 오래오래 평떵프해요🩶', 
+        eng: '@@, you have cleared the labyrinth!<br>Thank you for taking the time to play.<br>Let’s be Seonghwa’s fans forever 🩶',
+        subText: '추첨 이벤트에는 자동 참여되셨습니다!<br>4월 7일 발표 예정이니 이후 트윗을 확인해주세요!',
+        type: 'ending' 
+      }
+    ];
+
+    function saveProgress() { localStorage.setItem('seonghwa_labyrinth_save', JSON.stringify({ stage: currentStage, name: userName })); }
+    function loadProgress() {
+      const savedData = localStorage.getItem('seonghwa_labyrinth_save');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        currentStage = data.stage || 0;
+        userName = data.name || "";
+      }
+    }
+
+    function goToHintLink() { window.open('https://spin-spin.com/dearmars403', '_blank'); }
+
+    function handleGlobalClick(e) {
+      const stage = stages[currentStage];
+      if (stage.type === 'story' && !stage.hasYesBtn && !isTyping) nextStage();
+    }
+
+    function nextStage(e) {
+      if(e) e.stopPropagation(); 
+      currentStage++;
+      if (currentStage < stages.length) { saveProgress(); loadStage(); }
+    }
+
+    function typeWriter(text, engText, element, engElement) {
+      if (!text && !engText) { element.innerHTML = ''; engElement.innerHTML = ''; return; }
+      
+      const processedText = text.replace(/@@/g, userName);
+      const processedEng = engText ? engText.replace(/@@/g, userName) : "";
+      
+      element.innerHTML = '';
+      engElement.innerHTML = '';
+      let i = 0;
+      isTyping = true;
+      clearTimeout(typingTimer);
+
+      function type() {
+        if (i < processedText.length) {
+          if (processedText.substring(i, i + 4) === '<br>') { element.innerHTML += '<br>'; i += 4; }
+          else { element.innerHTML += processedText.charAt(i); i++; }
+          typingTimer = setTimeout(type, 50);
+        } else {
+          isTyping = false;
+          // 한글 타이핑이 끝나면 영문 바로 노출
+          engElement.innerHTML = processedEng;
+        }
+      }
+      type();
+    }
+
+    function loadStage() {
+      const stage = stages[currentStage];
+      const bubble = document.getElementById('question-bubble');
+      const questionText = document.getElementById('question-text');
+      const engText = document.getElementById('eng-text');
+      const inputArea = document.getElementById('input-area');
+      const yesBtn = document.getElementById('yes-button');
+      const hintBtn = document.getElementById('hint-btn');
+      const input = document.getElementById('answer-input');
+      const emojiContainer = document.getElementById('emoji');
+      const stageImg = document.getElementById('stage-image');
+      const feedback = document.getElementById('feedback');
+      const subText = document.getElementById('sub-text');
+      
+      feedback.textContent = "";
+      subText.style.display = "none";
+      stageImg.src = stage.image || "";
+      stageImg.style.display = stage.image ? 'block' : 'none';
+      emojiContainer.style.display = stage.emoji ? 'block' : 'none';
+      bubble.style.display = (stage.question || stage.eng) ? 'flex' : 'none';
+      bubble.classList.toggle('no-style', stage.type === 'story' && stage.bubble === false);
+      if (currentStage === 0) bubble.style.display = 'none';
+
+      inputArea.style.display = (stage.type === 'quiz' || stage.type === 'nickname') ? 'flex' : 'none';
+      yesBtn.style.display = stage.hasYesBtn ? 'block' : 'none';
+      hintBtn.style.display = stage.type === 'quiz' ? 'block' : 'none';
+
+      if (stage.type === 'ending') {
+        inputArea.style.display = 'none'; hintBtn.style.display = 'none'; bubble.style.display = 'flex';
+        bubble.classList.add('no-style');
+        questionText.innerHTML = stage.question.replace(/@@/g, userName);
+        engText.innerHTML = stage.eng.replace(/@@/g, userName);
+        subText.innerHTML = stage.subText;
+        subText.style.display = "block";
+        localStorage.removeItem('seonghwa_labyrinth_save');
+        return;
+      }
+
+      typeWriter(stage.question || "", stage.eng || "", questionText, engText);
+      input.placeholder = stage.type === 'nickname' ? "닉네임을 입력하세요" : "정답을 입력하세요 (영문 소문자/숫자)";
+      emojiContainer.textContent = stage.emoji || '';
+      input.value = '';
+    }
+
+    document.getElementById('answer-input').addEventListener('input', function(e) {
+      if (stages[currentStage].type === 'quiz') {
+        e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '');
+      }
+    });
+
+    async function checkAnswer(e) {
+      if(e) e.stopPropagation(); 
+      const input = document.getElementById('answer-input');
+      const feedback = document.getElementById('feedback');
+      const val = input.value.trim();
+      const stage = stages[currentStage];
+
+      if (stage.type === 'nickname') {
+        if (!val) { shakeInput(); return; }
+        feedback.textContent = "확인 중..."; 
+        try {
+          const res = await fetch(`${DB_URL}/nicknames/${val}.json`);
+          const data = await res.json();
+          if (data) {
+            feedback.textContent = "이미 사용 중인 닉네임이야! / Already in use! 🩶";
+            feedback.className = "feedback err";
+            shakeInput();
+          } else {
+            await fetch(`${DB_URL}/nicknames/${val}.json`, { method: 'PUT', body: JSON.stringify({ used: true }) });
+            userName = val; nextStage(e);
+          }
+        } catch (e) { userName = val; nextStage(e); }
+        return;
+      }
+
+      if (val === stage.answer) nextStage(e); 
+      else {
+        feedback.textContent = "틀렸어! / Wrong answer! 🫨";
+        feedback.className = "feedback err";
+        shakeInput();
+      }
+    }
+
+    function shakeInput() {
+      const el = document.getElementById('input-area');
+      el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+      document.getElementById('answer-input').value = '';
+    }
+
+    document.getElementById('answer-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.stopPropagation(); checkAnswer(e); } });
+
+    loadProgress();
+    loadStage();
+  </script>
+</body>
+</html>
